@@ -50,25 +50,33 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
-    public DetalharTopicoDTO detalhar(@PathVariable Long id) {
-        Topico topico = topicRepository.getById(id);
-
-        return new DetalharTopicoDTO(topico);
+    public ResponseEntity<DetalharTopicoDTO> detalhar(@PathVariable Long id) {
+        Optional<Topico> topico = topicRepository.findById(id);
+            if(topico.isPresent()) {
+                return ResponseEntity.ok(new DetalharTopicoDTO(topico.get()));
+            }
+            return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id,@RequestBody @Valid AtualizaTopicForm form) {
-        Topico topico = form.atualizar(id, topicRepository);
-
-        return ResponseEntity.ok(new TopicoDTO(topico));
+        Optional<Topico> topico = topicRepository.findById(id);
+            if(topico.isPresent()) {
+                Topico atualizaTopico = form.atualizar(id, topicRepository);
+                return ResponseEntity.ok(new TopicoDTO(atualizaTopico));
+            }
+            return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<TopicoDTO> remover(@PathVariable Long id) {
-        topicRepository.deleteById(id);
-
-        return ResponseEntity.noContent().build();
+        Optional<Topico> topico = topicRepository.findById(id);
+            if (topico.isPresent()) {
+                topicRepository.deleteById(id);
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.notFound().build();
     }
 }
