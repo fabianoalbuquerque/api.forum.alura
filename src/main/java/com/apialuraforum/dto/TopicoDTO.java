@@ -1,7 +1,6 @@
 package com.apialuraforum.dto;
 
 import com.apialuraforum.modelo.Topico;
-import com.apialuraforum.modelo.Usuario;
 
 import java.time.LocalDateTime;
 import java.util.List;
